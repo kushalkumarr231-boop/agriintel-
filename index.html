@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgriVision AI — Agricultural Intelligence Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════ LOADER ═══════════════════════ -->
+<div id="page-loader">
+  <div class="loader-inner">
+    <div class="loader-logo">
+      <div class="loader-icon">🌾</div>
+      <span class="loader-brand">AgriVision AI</span>
+    </div>
+    <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+    <p class="loader-text">Initializing Intelligence Systems...</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════ BACKGROUND CANVAS ═══════════════════════ -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- ═══════════════════════ APP SHELL ═══════════════════════ -->
+<div id="app" class="app-shell hidden">
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-glow"></div>
+
+    <!-- Logo -->
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <span class="logo-leaf">🌿</span>
+      </div>
+      <div class="logo-text-group">
+        <span class="logo-name" data-t="appName">AgriVision AI</span>
+        <span class="logo-tagline" data-t="tagline">Smart Farming</span>
+      </div>
+    </div>
+
+    <!-- Farmer Profile -->
+    <div class="sidebar-profile">
+      <div class="profile-avatar">👨‍🌾</div>
+      <div class="profile-info">
+        <span class="profile-name">Rajesh Kumar</span>
+        <span class="profile-badge">PRO Farmer</span>
+      </div>
+      <div class="profile-dot"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">MAIN MENU</div>
+      <a class="nav-item active" data-section="dashboard">
+        <span class="nav-icon">⊞</span>
+        <span class="nav-label" data-t="dashboard">Dashboard</span>
+        <span class="nav-pip"></span>
+      </a>
+      <a class="nav-item" data-section="weather">
+        <span class="nav-icon">⛅</span>
+        <span class="nav-label" data-t="weather">Weather</span>
+      </a>
+      <a class="nav-item" data-section="crops">
+        <span class="nav-icon">🌱</span>
+        <span class="nav-label" data-t="crops">Crop Planning</span>
+      </a>
+      <a class="nav-item" data-section="cropcare">
+        <span class="nav-icon">🛡️</span>
+        <span class="nav-label" data-t="cropCare">Crop Care</span>
+      </a>
+      <div class="nav-section-label">FINANCE & MARKET</div>
+      <a class="nav-item" data-section="schemes">
+        <span class="nav-icon">🏛️</span>
+        <span class="nav-label" data-t="schemes">Gov. Schemes</span>
+      </a>
+      <a class="nav-item" data-section="marketing">
+        <span class="nav-icon">📈</span>
+        <span class="nav-label" data-t="marketing">Market Prices</span>
+      </a>
+      <div class="nav-section-label">TOOLS & COMMUNITY</div>
+      <a class="nav-item" data-section="upload">
+        <span class="nav-icon">🔬</span>
+        <span class="nav-label" data-t="upload">Crop Doctor</span>
+      </a>
+      <a class="nav-item" data-section="expert">
+        <span class="nav-icon">💬</span>
+        <span class="nav-label" data-t="expert">Expert Chat</span>
+      </a>
+      <a class="nav-item" data-section="news">
+        <span class="nav-icon">📰</span>
+        <span class="nav-label" data-t="news">Agri News</span>
+      </a>
+      <a class="nav-item" data-section="community">
+        <span class="nav-icon">👥</span>
+        <span class="nav-label" data-t="community">Farm Voice</span>
+      </a>
+    </nav>
+
+    <!-- Sidebar Footer -->
+    <div class="sidebar-footer">
+      <div class="weather-mini" id="sidebar-weather">
+        <span class="weather-mini-icon">☀️</span>
+        <div>
+          <span class="weather-mini-temp">28°C</span>
+          <span class="weather-mini-loc">Punjab</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MOBILE OVERLAY -->
+  <div id="mobile-overlay" class="mobile-overlay"></div>
+
+  <!-- MAIN AREA -->
+  <div class="main-area">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button id="menu-toggle" class="menu-btn" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+        <div class="breadcrumb">
+          <span class="breadcrumb-root">AgriVision</span>
+          <span class="breadcrumb-sep">›</span>
+          <span id="page-title" class="breadcrumb-current">Dashboard</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-search">
+          <span class="search-icon">🔍</span>
+          <input type="text" placeholder="Search crops, schemes..." class="search-input" />
+        </div>
+        <div class="topbar-lang">
+          <select id="lang-select" class="lang-select">
+            <option value="en">🇮🇳 EN</option>
+            <option value="hi">हि HI</option>
+            <option value="te">తె TE</option>
+            <option value="ta">த TA</option>
+            <option value="kn">ಕ KN</option>
+            <option value="mr">म MR</option>
+          </select>
+        </div>
+        <div class="topbar-notif">
+          <button class="notif-btn" title="Notifications">
+            <span>🔔</span>
+            <span class="notif-badge">3</span>
+          </button>
+        </div>
+        <div class="topbar-avatar">👨‍🌾</div>
+      </div>
+    </header>
+
+    <!-- PAGE CONTENT -->
+    <main class="content-area" id="content-area">
+
+      <!-- ══════════ DASHBOARD ══════════ -->
+      <section id="section-dashboard" class="section active">
+        <div class="section-header">
+          <div>
+            <h1 class="section-title">Good Morning, Rajesh 👋</h1>
+            <p class="section-subtitle">Here's your farm intelligence overview for today.</p>
+          </div>
+          <div class="section-date" id="current-date"></div>
+        </div>
+
+        <!-- Hero Stats -->
+        <div class="stats-grid" id="dashboard-stats">
+          <div class="stat-card" data-delay="0">
+            <div class="stat-icon-wrap" style="--ic:#16a34a">🌾</div>
+            <div class="stat-body">
+              <span class="stat-label">Active Crops</span>
+              <span class="stat-value counter" data-target="4">0</span>
+              <span class="stat-change positive">+1 this season</span>
+            </div>
+            <div class="stat-sparkline" id="spark-1"></div>
+          </div>
+          <div class="stat-card" data-delay="1">
+            <div class="stat-icon-wrap" style="--ic:#2563eb">💰</div>
+            <div class="stat-body">
+              <span class="stat-label">Portfolio Value</span>
+              <span class="stat-value">₹2.4L</span>
+              <span class="stat-change positive">↑ 8.3% this month</span>
+            </div>
+            <div class="stat-sparkline" id="spark-2"></div>
+          </div>
+          <div class="stat-card" data-delay="2">
+            <div class="stat-icon-wrap" style="--ic:#f59e0b">⛅</div>
+            <div class="stat-body">
+              <span class="stat-label">Weather Risk</span>
+              <span class="stat-value">Medium</span>
+              <span class="stat-change neutral">Monitor daily</span>
+            </div>
+            <div class="stat-sparkline" id="spark-3"></div>
+          </div>
+          <div class="stat-card" data-delay="3">
+            <div class="stat-icon-wrap" style="--ic:#7c3aed">🏛️</div>
+            <div class="stat-body">
+              <span class="stat-label">Scheme Benefits</span>
+              <span class="stat-value">₹12K</span>
+              <span class="stat-change neutral">2 pending</span>
+            </div>
+            <div class="stat-sparkline" id="spark-4"></div>
+          </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="dash-charts">
+          <div class="chart-card wide" data-delay="4">
+            <div class="chart-header">
+              <div>
+                <h3 class="chart-title">Wheat Price — 30 Day Trend</h3>
+                <p class="chart-sub">₹ per quintal · Punjab Mandi</p>
+              </div>
+              <div class="chart-legend">
+                <span class="legend-dot" style="background:#22c55e"></span>
+                <span class="legend-txt">Live Price</span>
+              </div>
+            </div>
+            <div class="chart-wrap">
+              <canvas id="dash-chart"></canvas>
+            </div>
+          </div>
+          <div class="chart-card narrow" data-delay="5">
+            <h3 class="chart-title mb-sm">Crop Distribution</h3>
+            <div class="chart-wrap chart-wrap-donut">
+              <canvas id="donut-chart"></canvas>
+            </div>
+            <div class="donut-legend" id="donut-legend"></div>
+          </div>
+        </div>
+
+        <!-- Activity Feed -->
+        <div class="activity-section" data-delay="6">
+          <h3 class="section-h3">Recent Activity</h3>
+          <div class="activity-feed" id="activity-feed"></div>
+        </div>
+      </section>
+
+      <!-- ══════════ WEATHER ══════════ -->
+      <section id="section-weather" class="section">
+        <div class="section-header">
+          <div>
+            <h1 class="section-title">Weather Intelligence</h1>
+            <p class="section-subtitle">Real-time weather data & 7-day agricultural forecast</p>
+          </div>
+        </div>
+
+        <div class="filter-bar">
+          <div class="filter-group">
+            <label class="filter-label">State</label>
+            <select class="av-select" id="weather-state">
+              <option>Punjab</option><option>Maharashtra</option><option>Andhra Pradesh</option>
+              <option>Karnataka</option><option>Uttar Pradesh</option><option>Rajasthan</option>
+              <option>Tamil Nadu</option><option>West Bengal</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label class="filter-label">District</label>
+            <select class="av-select" id="weather-district">
+              <option>Amritsar</option><option>Ludhiana</option><option>Patiala</option><option>Bathinda</option>
+            </select>
+          </div>
+          <button class="av-btn-primary" id="fetch-weather">Get Forecast</button>
+        </div>
+
+        <!-- Weather Hero -->
+        <div class="weather-hero" id="weather-hero">
+          <div class="weather-main-card">
+            <div class="wm-bg-orb"></div>
+            <div class="wm-content">
+              <div class="wm-icon" id="w-icon">⛅</div>
+              <div class="wm-temp" id="w-temp">--°C</div>
+              <div class="wm-desc" id="w-desc">Loading weather...</div>
+              <div class="wm-location" id="w-loc">Select location</div>
+            </div>
+            <div class="wm-stats">
+              <div class="wm-stat"><span class="wm-stat-v" id="w-humidity">--%</span><span class="wm-stat-l">Humidity</span></div>
+              <div class="wm-divider"></div>
+              <div class="wm-stat"><span class="wm-stat-v" id="w-wind">-- km/h</span><span class="wm-stat-l">Wind</span></div>
+              <div class="wm-divider"></div>
+              <div class="wm-stat"><span class="wm-stat-v" id="w-rain">--%</span><span class="wm-stat-l">Rain</span></div>
+              <div class="wm-divider"></div>
+              <div class="wm-stat"><span class="wm-stat-v" id="w-rainfall">-- mm</span><span class="wm-stat-l">Rainfall</span></div>
+            </div>
+          </div>
+          <div class="weather-risk-card" id="weather-risk-card">
+            <div class="risk-label">Crop Risk</div>
+            <div class="risk-value" id="risk-value">—</div>
+            <div class="risk-rings" id="risk-rings">
+              <div class="risk-ring r1"></div>
+              <div class="risk-ring r2"></div>
+              <div class="risk-ring r3"></div>
+            </div>
+            <p class="risk-tip" id="risk-tip">Select a location to see risk assessment</p>
+          </div>
+        </div>
+
+        <!-- 7-Day Forecast -->
+        <div class="forecast-section">
+          <h3 class="section-h3">7-Day Forecast</h3>
+          <div class="forecast-grid" id="forecast-grid"></div>
+          <div class="chart-card mt-md">
+            <div class="chart-header">
+              <h3 class="chart-title">Temperature & Rain Forecast</h3>
+            </div>
+            <div class="chart-wrap">
+              <canvas id="weather-chart"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════ CROPS ══════════ -->
+      <section id="section-crops" class="section">
+        <div class="section-header">
+          <div>
+            <h1 class="section-title">Crop Planning Module</h1>
+            <p class="section-subtitle">AI-powered crop recommendations for your region</p>
+          </div>
+        </div>
+        <div class="filter-bar">
+          <div class="filter-group">
+            <label class="filter-label">Crop</label>
+            <select class="av-select" id="crop-select">
+              <option>Wheat</option><option>Rice</option><option>Maize</option><option>Cotton</option>
+              <option>Sugarcane</option><option>Soybean</option><option>Groundnut</option><option>Onion</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label class="filter-label">Region</label>
+            <select class="av-select" id="crop-region">
+              <option>Punjab</option><option>Maharashtra</option><option>Andhra Pradesh</option>
+              <option>Karnataka</option><option>Uttar Pradesh</option>
+            </select>
+          </div>
+        </div>
+        <div class="crop-grid" id="crop-grid"></div>
+        <div class="ai-banner" id="crop-ai-banner">
+          <div class="ai-banner-icon">🤖</div>
+          <div class="ai-banner-body">
+            <span class="ai-banner-label">AI Recommendation</span>
+            <p class="ai-banner-text" id="crop-ai-text">Select a crop and region for personalized recommendations.</p>
+          </div>
+          <div class="ai-banner-pulse"></div>
+        </div>
+      </section>
+
+      <!-- ══════════ CROP CARE ══════════ -->
+      <section id="section-cropcare" class="section">
+        <div class="section-header">
+          <div>
+            <h1 class="section-title">Crop Care Assistant</h1>
+            <p class="section-subtitle">Disease detection, prevention & treatment guides</p>
+          </div>
+        </div>
+        <div class="filter-bar">
+          <div class="filter-group">
+            <label class="filter-label">Select Crop</label>
+            <select class="av-select" id="care-crop-select">
+              <option>Wheat</option><option>Rice</option><option>Cotton</option><option>Maize</option>
+            </select>
+          </div>
+        </div>
+        <div class="disease-list" id="disease-list"></div>
+      </section>
+
+      <!-- ══════════ SCHEMES ══════════ -->
+      <section id="section-schemes" class="section">
+        <div class="section-header">
+          <div>
+            <h1 class="section-title">Government Schemes</h1>
+            <p class="section-subtitle">All major Indian agricultural support schemes</p>
+          </div>
+        </div>
+        <div class="filter-bar">
+          <div class="filter-group">
+            <label class="filter-label">State</label>
+            <select class="av-select" id="scheme-state">
+              <option>All States</option><option>Punjab</option><option>Maharashtra</option>
+              <option>Uttar Pradesh</option><option>Andhra Pradesh</option>
+            </select>
+          </div>
+          <div class="scheme-cats" id="scheme-cats"></div>
+        </div>
+        <div class="schemes-grid" id="schemes-grid"></div>
+      </section>
+
+      <!-- ══════════ MARKETING ══════════ -->
+      <section id="section-marketing" class="section">
+        <div class="section-header">
+          <div>
+            <h1 class="section-title">Market Intelligence</h1>
+            <p class="section-subtitle">Real-time price trends & AI trading signals</p>
+          </div>
+        </div>
+        <div class="filter-bar">
+          <div class="filter-group">
+            <label class="filter-label">Crop</label>
+            <select class="av-select" id="mkt-crop">
+              <option>Wheat</option><option>Rice</option><option>Cotton</option><option>Maize</option>
+              <option>Sugarcane</option><option>Soybean</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label class="filter-label">Mandi</label>
+            <select class="av-select" id="mkt-mandi">
+              <option>Amritsar</option><option>Ludhiana</option><option>Pune</option>
+              <option>Nashik</option><option>Guntur</option>
+            </select>
+          </div>
+          <button class="av-btn-primary" id="fetch-market">Analyze Market</button>
+        </div>
+
+        <div class="mkt-stats" id="mkt-stats"></div>
+
+        <div class="mkt-charts">
+          <div class="chart-card mkt-chart-main">
+            <div class="chart-header">
+              <div>
+                <h3 class="chart-title" id="mkt-chart-title">Price Trend — 30 Days</h3>
+                <p class="chart-sub">₹ per quintal</p>
+              </div>
+              <div id="mkt-trend-badge"></div>
+            </div>
+            <div class="chart-wrap">
+              <canvas id="mkt-chart"></canvas>
+            </div>
+          </div>
+
+          <div class="mkt-side-cards">
+            <div class="rec-card" id="rec-card"></div>
+            <div class="neg-card" id="neg-card"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════ CROP DOCTOR ══════════ -->
+      <section id="section-upload" class="section">
+        <div class="section-header">
+          <div>
+            <h1 class="section-title">Crop Doctor</h1>
+            <p class="section-subtitle">AI-powered disease detection from crop photos</p>
+          </div>
+        </div>
+        <div class="doctor-layout">
+          <div class="upload-zone-card">
+            <div class="upload-zone" id="upload-zone">
+              <div class="upload-idle" id="upload-idle">
+                <div class="upload-orbit">
+                  <div class="orbit-ring r1"></div>
+                  <div class="orbit-ring r2"></div>
+                  <div class="orbit-icon">📷</div>
+                </div>
+                <h3 class="upload-h3">Upload Crop Photo</h3>
+                <p class="upload-sub">Drag & drop or click to select</p>
+                <span class="upload-formats">JPG, PNG, WEBP supported</span>
+              </div>
+              <img id="upload-preview" class="upload-preview hidden" alt="Preview" />
+              <input type="file" id="file-input" accept="image/*" class="file-input" />
+            </div>
+            <button class="av-btn-primary analyze-btn hidden" id="analyze-btn">
+              <span class="btn-icon">🤖</span> Analyze with AI
+            </button>
+          </div>
+
+          <div class="analysis-panel" id="analysis-panel">
+            <div class="analysis-placeholder">
+              <span class="ap-icon">🔬</span>
+              <p>Upload a crop photo to start AI analysis</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════ EXPERT CHAT ══════════ -->
+      <section id="section-expert" class="section">
+        <div class="section-header">
+          <div>
+            <h1 class="section-title">Talk to Expert</h1>
+            <p class="section-subtitle">Connect with certified agricultural experts</p>
+          </div>
+        </div>
+        <div class="chat-layout">
+          <!-- Expert list -->
+          <div class="expert-list">
+            <div class="expert-card active" data-expert="sharma">
+              <div class="expert-avatar">👨‍⚕️</div>
+              <div class="expert-info">
+                <span class="expert-name">Dr. A. Sharma</span>
+                <span class="expert-spec">Crop Pathologist</span>
+                <span class="expert-status online">● Online</span>
+              </div>
+            </div>
+            <div class="expert-card" data-expert="patel">
+              <div class="expert-avatar">👩‍🔬</div>
+              <div class="expert-info">
+                <span class="expert-name">Dr. S. Patel</span>
+                <span class="expert-spec">Soil Scientist</span>
+                <span class="expert-status online">● Online</span>
+              </div>
+            </div>
+            <div class="expert-card" data-expert="reddy">
+              <div class="expert-avatar">👨‍🌾</div>
+              <div class="expert-info">
+                <span class="expert-name">Mr. V. Reddy</span>
+                <span class="expert-spec">Market Analyst</span>
+                <span class="expert-status offline">● Away</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chat window -->
+          <div class="chat-window">
+            <div class="chat-topbar">
+              <div class="chat-expert-info">
+                <div class="chat-expert-avatar">👨‍⚕️</div>
+                <div>
+                  <span class="chat-expert-name">Dr. A. Sharma</span>
+                  <span class="chat-expert-sub">Crop Pathologist · IIT Delhi · 12 yrs exp</span>
+                </div>
+              </div>
+              <div class="chat-actions">
+                <button class="chat-action-btn" title="Voice Call">📞</button>
+                <button class="chat-action-btn" title="Video Call">📹</button>
+              </div>
+            </div>
+
+            <div class="chat-messages" id="chat-messages"></div>
+
+            <div class="chat-input-bar">
+              <button class="chat-attach">📎</button>
+              <input type="text" id="chat-input" class="chat-input" placeholder="Type your question about crops..." />
+              <button class="chat-send" id="chat-send">➤</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════ NEWS ══════════ -->
+      <section id="section-news" class="section">
+        <div class="section-header">
+          <div>
+            <h1 class="section-title">Agriculture News</h1>
+            <p class="section-subtitle">Latest updates on policy, weather & markets</p>
+          </div>
+        </div>
+        <div class="filter-bar">
+          <div class="news-cats" id="news-cats"></div>
+        </div>
+        <div class="news-grid" id="news-grid"></div>
+      </section>
+
+      <!-- ══════════ COMMUNITY ══════════ -->
+      <section id="section-community" class="section">
+        <div class="section-header">
+          <div>
+            <h1 class="section-title">Farm Voice</h1>
+            <p class="section-subtitle">Connect with 2.4 lakh+ farmers across India</p>
+          </div>
+        </div>
+        <div class="community-layout">
+          <div class="community-main">
+            <!-- Post Box -->
+            <div class="post-box">
+              <div class="post-box-top">
+                <div class="post-avatar">🧑‍🌾</div>
+                <textarea id="post-input" class="post-textarea" placeholder="Share your farming experience, question, or market update..."></textarea>
+              </div>
+              <div class="post-box-bottom">
+                <div class="post-tags" id="post-tags"></div>
+                <button class="av-btn-primary" id="submit-post">Post to Community</button>
+              </div>
+            </div>
+            <div class="posts-list" id="posts-list"></div>
+          </div>
+          <div class="community-sidebar">
+            <div class="cs-card">
+              <h4 class="cs-title">🔥 Trending Topics</h4>
+              <div class="trending-list" id="trending-list"></div>
+            </div>
+            <div class="cs-card">
+              <h4 class="cs-title">📊 Community Stats</h4>
+              <div class="comm-stats" id="comm-stats"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main><!-- /content-area -->
+  </div><!-- /main-area -->
+</div><!-- /app -->
+
+<script src="app.js"></script>
+</body>
+</html>
